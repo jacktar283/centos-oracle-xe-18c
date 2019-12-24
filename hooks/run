@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# docker run -d --rm \
+# 	--name centos-test \
+# 	--network qpid-net \
+# 	-v /etc/docker/ssl:/server \
+# 	-v oradata:/oradata \
+# 	centostest
+
+# Run interactively whilst building and troubleshooting
+#	--mount "type=bind,src=/etc/docker/ssl,dst=/server" \
+#	--mount "type=volume,src=oracle-opt,dst=/opt" \
+docker run --rm -it \
+	--name centos-test \
+	--network qpid-net \
+	--mount "type=bind,src=/etc/docker/ssl,dst=/server" \
+	--mount "type=volume,src=oracle-data,dst=/oracle-data" \
+	--publish 1521:1521 \
+	--publish 8081:8080 \
+	robsaun/centostest bash

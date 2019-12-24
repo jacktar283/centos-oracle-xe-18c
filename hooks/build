@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# $IMAGE_NAME and $DOCKER_TAG are injected by docker hub into the build
+# https://docs.docker.com/docker-hub/builds/advanced/
+
+if [ -z "${IMAGE_NAME}" ]; then
+  DOCKER_TAG="latest"
+  IMAGE_NAME="jacktar283/centos-oracle-xe-18c:${DOCKER_TAG}"
+fi
+
+ORACLE_TAG="18c"
+
+docker build \
+  --memory=2g \
+  --memory-swap=-1 \
+  --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+  --build-arg VERSION="${DOCKER_TAG}" \
+  --build-arg ORACLE_TAG="${ORACLE_TAG}" \
+  --tag "${IMAGE_NAME}" \
+  .
