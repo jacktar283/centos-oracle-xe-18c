@@ -1,7 +1,7 @@
 # Containerized Oracle XE 18c
 
 This repo contains a [Dockerfile](https://www.docker.com/) to create an image with [Oracle Database 18c Express Edition](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) running in [CentOS 7](http://www.centos.org/)
-This is branched from the madhead/docker-oracle-xe repo which uses Oracle XE 11g and updates the Express Edition version to 18c with associated config tweaks.
+This is branched from the [madhead/docker-oracle-xe](https://github.com/madhead/docker-oracle-xe) repo which uses Oracle XE 11g and updates the Express Edition version to 18c with associated config tweaks.
 
 **NOTE: THIS IS STILL WORK IN PROGRESS. USE IT AT YOUR OWN RISK. Specifically the init.ora and other configuration files have not been applied at this time**
 
@@ -20,9 +20,10 @@ Let's assume that you are familar with Docker and building Docker images from [D
 1. Run `./hooks/build` from the root directory of this repo.
 1. You should get your image ready in a few minutes (apart from downloading base `centos:centos7` image).
 
-During the configuration of Oracle XE instance two files - `init.ora` and `initXETemp.ora` - are overridden with ones from `config` directory of this repo.
+**This is still work in progress...**
+*During the configuration of Oracle XE instance two files - `init.ora` and `initXETemp.ora` - are overridden with ones from `config` directory of this repo.
 The only difference is that `memory_target` parameter is commented in them to prevent `ORA-00845: MEMORY_TARGET not supported on this system` error.
-The only piece of magic in this image :).
+The only piece of magic in this image :).*
 
 ## How to use
 
