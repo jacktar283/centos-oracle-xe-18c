@@ -15,17 +15,16 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
 
 # These RPMS should be downloaded from Oracle website and copied
 # into our local rpm directory
-ENV ORACLE_PREINST_RPM=oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm
-ENV ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
-ENV ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE
-ENV ORACLE_SCRIPTS=$ORACLE_HOME/config/scripts
-ENV ORACLE_USER=oracle
-ENV ORACLE_GROUP=oinstall
-ENV INIT_PASS=oracle
-ENV PATH=$ORACLE_HOME/bin:$PATH
-ENV ORACLE_SID=XE
-ENV ORACLE_DOCKER_INSTALL=true
-ENV DBFILE_DEST=/oracle-data
+ENV ORACLE_PREINST_RPM=oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm \
+    ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
+    ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE \
+    ORACLE_USER=oracle \
+    ORACLE_GROUP=oinstall \
+    INIT_PASS=oracle \
+    PATH=$ORACLE_HOME/bin:$PATH \
+    ORACLE_SID=XE \
+    ORACLE_DOCKER_INSTALL=true \
+    DBFILE_DEST=/oracle-data
 
 # Pre-requirements
 RUN mkdir -p /run/lock/subsys $DBFILE_DEST
@@ -50,19 +49,19 @@ RUN yum localinstall -y /tmp/$ORACLE_PREINST_RPM && \
 # Install Oracle XE
 COPY rpm/$ORACLE_RPM /tmp/
 RUN yum localinstall -y /tmp/$ORACLE_RPM && \
-    rm -rf /tmp/$ORACLE_RPM && \
-    mkdir -p $ORACLE_SCRIPTS
+    rm -rf /tmp/$ORACLE_RPM
 
 # Restore 'free' command
 RUN mv /usr/bin/free.orig /usr/bin/free
 
 # Configure instance
-ADD config/init.ora config/initXETemp.ora $ORACLE_SCRIPTS
-RUN chown -R $ORACLE_USER:$ORACLE_GROUP $ORACLE_HOME/config && \
+RUN mkdir -p $ORACLE_HOME/config/
+ADD config/init.ora config/initXETemp.ora $ORACLE_HOME/config/
+RUN chown -R $ORACLE_USER:dba $ORACLE_HOME/config && \
     chmod -R 755 $ORACLE_HOME/config && \
     ( echo "$INIT_PASS"; echo "$INIT_PASS"; ) |/etc/init.d/oracle-xe-18c configure
 
-VOLUME /oracle-data
+VOLUME $DBFILE_DEST
 # Run script
 COPY config/start.sh /
 #CMD /start.sh
